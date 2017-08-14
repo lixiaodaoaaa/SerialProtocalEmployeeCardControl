@@ -22,8 +22,12 @@ package com.lixiaodaoaaa.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gcssloop.graphics.R;
 
@@ -31,40 +35,55 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.Executors;
 
+import vmc.machine.impl.employee.card.StringUtils;
 import vmc.serialport.SerialPort;
 
 public class MainActivity extends Activity {
 
 
-    private SerialPort sp;
+    private SerialPort serialPort;
     private FileInputStream mInputStream;
     private FileOutputStream mOutputStream;
+
+    private static String EMPLOYEE_DEVICE_NAME = "/dev/ttymxc1";
+    private EditText etPaymentAmount;
+    private TextView readCardTv;
+
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 11:
+                    byte[] buffer = (byte[]) msg.obj;
+                    StringBuilder stringBuilder = new StringBuilder();
+                    StringUtils.toHexString(buffer, buffer.length, stringBuilder);
+                    readCardTv.setText(stringBuilder);
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initView();
+
     }
 
-    private void executeJobs() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                sendDataToSerial();
-            }
-        }, 6 * 1000);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                readSerial();
-            }
-        }, 6 * 1000);
+    private void initView() {
+        etPaymentAmount = (EditText) findViewById(R.id.et_pament_amount);
+        readCardTv = (TextView) findViewById(R.id.readCardTv);
     }
+
 
     private void readSerial() {
-
         int size;
         try {
             byte[] buffer = new byte[64];
@@ -76,7 +95,6 @@ public class MainActivity extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     void onDataReceived(final byte[] buffer, final int size) {
@@ -87,31 +105,56 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void sendDataToSerial() {
+
+    public void openSerial(View view) {
         try {
-            mOutputStream = (FileOutputStream) sp.getOutputStream();
-            mOutputStream.write('\n');
-            mOutputStream.write("write data to the  serial".getBytes());
+            serialPort = new SerialPort(new File(EMPLOYEE_DEVICE_NAME), 9600, 0);
+            Log.i("MainActivity", "open serial success");
+            Toast.makeText(MainActivity.this, "打开串口成功！", Toast.LENGTH_SHORT).show();
+        } catch (SecurityException | IOException e) {
+            e.printStackTrace();
+            Log.i("MainActivity", "open serial exception");
+            Toast.makeText(MainActivity.this, "打开串口出现异常！", Toast.LENGTH_SHORT).show();
+        }
+        mInputStream = (FileInputStream) serialPort.getInputStream();
+        Executors.newSingleThreadExecutor().execute(new ReadRunnable());
+    }
+
+
+    public void sendDataToSerial(View view) {
+        String paymentAmountStr = etPaymentAmount.getText().toString().trim();
+        try {
+            mOutputStream = (FileOutputStream) serialPort.getOutputStream();
+            final byte[] bytes = StringUtils.toByteArray("AABB010A0000007001");
+            mOutputStream.write(bytes, 0, bytes.length);
+            mOutputStream.flush();
             Log.i("MainActivity", "send  data  success to the serial");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             Log.i("MainActivity", "read data error");
         }
     }
 
-    private void openSerial() {
+    private class ReadRunnable implements Runnable {
 
-    }
-
-
-    public void openSerial(View view) {
-        try {
-            sp = new SerialPort(new File("/dev/ttymxc3"), 115200, 0);
-            Log.i("MainActivity", "open serial success");
-        } catch (SecurityException | IOException e) {
-            e.printStackTrace();
-            Log.i("MainActivity", "open serial exception");
+        @Override
+        public void run() {
+            byte[] buffer = new byte[64];
+            int length;
+            final InputStream ins = serialPort.getInputStream();
+            while (true) {
+                try {
+                    length = ins.read(buffer);
+                    if (length > 0) {
+                        Message msg = new Message();
+                        msg.what = 11;
+                        msg.obj = buffer;
+                        handler.sendMessage(msg);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        mInputStream = (FileInputStream) sp.getInputStream();
     }
 }
