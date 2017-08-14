@@ -1,0 +1,93 @@
+ext {
+    // android build version
+    PROJECT_BUILD = [
+            compileSdkVersion: 23,
+            buildToolsVersion: '23.0.2',
+            minSdkVersion    : 14,
+            targetSdkVersion : 23
+    ]
+
+    BUILD = PROJECT_BUILD
+
+    // android support version
+    supportVersion = '24.1.0'
+
+    // want project version
+    wantSdkVersion = '1.2.5-SNAPSHOT'
+    wantLogVersion = '1.2'
+
+    // okhttp version
+    okhttpVersion = '2.4.0'
+
+    // packages
+    supportPackage = 'com.android.support'
+
+    wantCorePackage = 'com.want.core'
+    wantModelPackage = 'com.want.model'
+    okhttpPackage = 'com.squareup.okhttp'
+
+    // support dependencies
+    supportDependencies = [
+            // v4
+            v4               : buildDependency(supportPackage, 'support-v4', supportVersion),
+
+            //v7
+            appcompat        : buildDependency(supportPackage, 'appcompat-v7', supportVersion),
+            cardview         : buildDependency(supportPackage, 'cardview-v7', supportVersion),
+            gridlayout       : buildDependency(supportPackage, 'gridlayout-v7', supportVersion),
+            mediarouter      : buildDependency(supportPackage, 'mediarouter-v7', supportVersion),
+            palette          : buildDependency(supportPackage, 'palette-v7', supportVersion),
+            recyclerview     : buildDependency(supportPackage, 'recyclerview-v7', supportVersion),
+            preference       : buildDependency(supportPackage, 'preference-v7', supportVersion),
+            cardView         : buildDependency(supportPackage, 'cardview-v7', supportVersion),
+
+            design           : buildDependency(supportPackage, 'design', supportVersion),
+            customtabs       : buildDependency(supportPackage, 'customtabs', supportVersion),
+            percent          : buildDependency(supportPackage, 'percent', supportVersion),
+            recommendation   : buildDependency(supportPackage, 'recommendation', supportVersion),
+            supportAnnotation: buildDependency(supportPackage, 'support-annotations', supportVersion),
+            v13              : buildDependency(supportPackage, 'support-v13', supportVersion),
+            multidex         : buildDependency(supportPackage, 'multidex', '1.0.0')
+    ]
+
+    // square dependencies
+    squareDependencies = [
+            leakcanary      : buildDependency('com.squareup.leakcanary', 'leakcanary-android', '1.4-beta2'),
+            leakcanary_no_op: buildDependency('com.squareup.leakcanary', 'leakcanary-android-no-op', '1.4-beta2')
+    ]
+
+    // want dependencies
+    wantDependencies = [
+            sdk        : buildDependency(wantCorePackage, 'sdk', wantSdkVersion),
+            log        : buildDependency(wantCorePackage, 'log', wantLogVersion),
+            ability    : buildDependency('com.want.ability', 'core', '1.1-SNAPSHOT@aar'),
+            imageloader: buildDependency(wantModelPackage, "imageloader", "2.0.4-SNAPSHOT@aar")
+    ]
+
+    // http dependencies
+    httpDependencies = [
+            http               : buildDependency(wantModelPackage, 'http', '2.0-SNAPSHOT@aar'),
+            volley             : buildDependency('com.mcxiaoke.volley', 'library', '1.0.15'),
+            okhttp             : buildDependency(okhttpPackage, 'okhttp', okhttpVersion),
+            okhttpurlconnection: buildDependency(okhttpPackage, 'okhttp-urlconnection', okhttpVersion),
+            gson               : buildDependency('com.google.code.gson', 'gson', '2.5')
+    ]
+
+    // database dependencies
+    dbDependencies = [
+            greendao : buildDependency("de.greenrobot", "greendao", "2.1.0"),
+            generator: buildDependency("de.greenrobot", "greendao-generator", "2.1.0"),
+    ]
+
+    // widget dependencies
+    widgetDependencies = [
+            progresspieview: buildDependency("com.github.filippudak.progresspieview", "library", "1.0.+"),
+            wheelview      : buildDependency("com.wx.wheelview", "wheelview", "1.3.3"),
+            circleindicator: buildDependency("me.relex", "circleindicator", "1.2.1"),
+            circleimageview: buildDependency("de.hdodenhof", "circleimageview", "2.1.0")
+    ]
+}
+
+String buildDependency(String pack, String dependency, String version) {
+    return "${pack}:${dependency}:${version}"
+}
