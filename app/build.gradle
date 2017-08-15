@@ -42,5 +42,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.4.0'
     testCompile 'junit:junit:4.12'
     compile project(path: ':libraries:liba_vmc_serialport')
-    compile project(path: ':libraries:vmc_impl_employee_card')
+//    compile project(path: ':libraries:vmc_impl_employee_card')
 }

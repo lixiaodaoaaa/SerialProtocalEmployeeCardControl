@@ -1,3 +1,2 @@
 include 'app'
 include ':libraries:liba_vmc_serialport'
-include ':libraries:vmc_impl_employee_card'

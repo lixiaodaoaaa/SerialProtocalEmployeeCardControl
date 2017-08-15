@@ -30,6 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gcssloop.graphics.R;
+import com.lixiaodaoaaa.uitls.CardProtocalUtils;
+import com.lixiaodaoaaa.uitls.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,7 +40,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Executors;
 
-import vmc.machine.impl.employee.card.StringUtils;
 import vmc.serialport.SerialPort;
 
 public class MainActivity extends Activity {
@@ -48,7 +49,7 @@ public class MainActivity extends Activity {
     private FileInputStream mInputStream;
     private FileOutputStream mOutputStream;
 
-    private static String EMPLOYEE_DEVICE_NAME = "/dev/ttymxc1";
+    private static String EMPLOYEE_DEVICE_NAME = "/dev/ttymxc2";
     private EditText etPaymentAmount;
     private TextView readCardTv;
 
@@ -116,6 +117,7 @@ public class MainActivity extends Activity {
             Log.i("MainActivity", "open serial exception");
             Toast.makeText(MainActivity.this, "打开串口出现异常！", Toast.LENGTH_SHORT).show();
         }
+        mOutputStream = (FileOutputStream) serialPort.getOutputStream();
         mInputStream = (FileInputStream) serialPort.getInputStream();
         Executors.newSingleThreadExecutor().execute(new ReadRunnable());
     }
@@ -123,9 +125,13 @@ public class MainActivity extends Activity {
 
     public void sendDataToSerial(View view) {
         String paymentAmountStr = etPaymentAmount.getText().toString().trim();
+        float amount = Float.valueOf(paymentAmountStr);
         try {
-            mOutputStream = (FileOutputStream) serialPort.getOutputStream();
-            final byte[] bytes = StringUtils.toByteArray("AABB010A0000007001");
+            String command = CardProtocalUtils.getCutAmountCommand(amount);
+            Log.i("MainActivity", "send command is " + command);
+            final byte[] bytes = StringUtils
+                    .toByteArray(command);
+
             mOutputStream.write(bytes, 0, bytes.length);
             mOutputStream.flush();
             Log.i("MainActivity", "send  data  success to the serial");
@@ -133,6 +139,23 @@ public class MainActivity extends Activity {
             e.printStackTrace();
             Log.i("MainActivity", "read data error");
         }
+    }
+
+    public void cancleCutMoney(View view) {
+        String command = CardProtocalUtils.getCancelCutCommand();
+        final byte[] bytes = StringUtils
+                .toByteArray(command);
+        try {
+            mOutputStream.write(bytes, 0, bytes.length);
+            mOutputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.i("MainActivity", "send  data  success to the serial");
+    }
+
+    public void readMachineId(View view) {
+        
     }
 
     private class ReadRunnable implements Runnable {
