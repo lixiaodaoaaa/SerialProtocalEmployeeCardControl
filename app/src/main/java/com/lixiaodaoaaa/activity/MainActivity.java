@@ -21,60 +21,34 @@ package com.lixiaodaoaaa.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gcssloop.graphics.R;
-import com.lixiaodaoaaa.uitls.CardProtocalUtils;
-import com.lixiaodaoaaa.uitls.StringUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.Executors;
-
-import vmc.serialport.SerialPort;
+import vmc.employee.card.protocal.CardFunctionImpl;
 
 public class MainActivity extends Activity {
 
 
-    private SerialPort serialPort;
-    private FileInputStream mInputStream;
-    private FileOutputStream mOutputStream;
-
-    private static String EMPLOYEE_DEVICE_NAME = "/dev/ttymxc2";
     private EditText etPaymentAmount;
     private TextView readCardTv;
 
 
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 11:
-                    byte[] buffer = (byte[]) msg.obj;
-                    StringBuilder stringBuilder = new StringBuilder();
-                    StringUtils.toHexString(buffer, buffer.length, stringBuilder);
-                    readCardTv.setText(stringBuilder);
-                    break;
-            }
-            super.handleMessage(msg);
-        }
-    };
+    CardFunctionImpl cardFunction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        initData();
+    }
 
+    private void initData() {
+        cardFunction = new CardFunctionImpl();
+        cardFunction.init(this);
     }
 
 
@@ -84,100 +58,20 @@ public class MainActivity extends Activity {
     }
 
 
-    private void readSerial() {
-        int size;
-        try {
-            byte[] buffer = new byte[64];
-            if (mInputStream == null) return;
-            size = mInputStream.read(buffer);
-            if (size > 0) {
-                onDataReceived(buffer, size);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    void onDataReceived(final byte[] buffer, final int size) {
-        runOnUiThread(new Runnable() {
-            public void run() {
-
-            }
-        });
-    }
-
-
-    public void openSerial(View view) {
-        try {
-            serialPort = new SerialPort(new File(EMPLOYEE_DEVICE_NAME), 9600, 0);
-            Log.i("MainActivity", "open serial success");
-            Toast.makeText(MainActivity.this, "打开串口成功！", Toast.LENGTH_SHORT).show();
-        } catch (SecurityException | IOException e) {
-            e.printStackTrace();
-            Log.i("MainActivity", "open serial exception");
-            Toast.makeText(MainActivity.this, "打开串口出现异常！", Toast.LENGTH_SHORT).show();
-        }
-        mOutputStream = (FileOutputStream) serialPort.getOutputStream();
-        mInputStream = (FileInputStream) serialPort.getInputStream();
-        Executors.newSingleThreadExecutor().execute(new ReadRunnable());
-    }
-
-
     public void sendDataToSerial(View view) {
         String paymentAmountStr = etPaymentAmount.getText().toString().trim();
-        float amount = Float.valueOf(paymentAmountStr);
-        try {
-            String command = CardProtocalUtils.getCutAmountCommand(amount);
-            Log.i("MainActivity", "send command is " + command);
-            final byte[] bytes = StringUtils
-                    .toByteArray(command);
-
-            mOutputStream.write(bytes, 0, bytes.length);
-            mOutputStream.flush();
-            Log.i("MainActivity", "send  data  success to the serial");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.i("MainActivity", "read data error");
-        }
+        cardFunction.cutAmount(Float.valueOf(paymentAmountStr));
     }
 
     public void cancleCutMoney(View view) {
-        String command = CardProtocalUtils.getCancelCutCommand();
-        final byte[] bytes = StringUtils
-                .toByteArray(command);
-        try {
-            mOutputStream.write(bytes, 0, bytes.length);
-            mOutputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.i("MainActivity", "send  data  success to the serial");
+        cardFunction.cancelCutAmount();
     }
 
     public void readMachineId(View view) {
-        
+        cardFunction.readMachineID();
     }
 
-    private class ReadRunnable implements Runnable {
-
-        @Override
-        public void run() {
-            byte[] buffer = new byte[64];
-            int length;
-            final InputStream ins = serialPort.getInputStream();
-            while (true) {
-                try {
-                    length = ins.read(buffer);
-                    if (length > 0) {
-                        Message msg = new Message();
-                        msg.what = 11;
-                        msg.obj = buffer;
-                        handler.sendMessage(msg);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    public void readLastMoney(View view) {
+        cardFunction.readLastTimeAvailbleAmount();
     }
 }

@@ -176,22 +176,5 @@ public final class StringUtils {
         return "";
     }
 
-    /**
-     * 将String转化为byte[]数组
-     *
-     * @param arg 需要转换的String对象
-     * @return 转换后的byte[]数组
-     * Exam:
-     * form :"AABB010A0000007001"
-     * To_sHEX_Bytes:AABB010A0000007001
-     */
-    public static byte[] toByteArray(String arg) {
-        int len = arg.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(arg.charAt(i), 16) << 4)
-                    + Character.digit(arg.charAt(i + 1), 16));
-        }
-        return data;
-    }
+
 }

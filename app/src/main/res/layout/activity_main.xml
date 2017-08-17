@@ -16,12 +16,6 @@
     tools:context="com.lixiaodaoaaa.activity.MainActivity"
 >
 
-    <Button android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="openSerial"
-            android:text="打开串口"
-    />
-
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:orientation="horizontal"
@@ -53,11 +47,11 @@
                 android:onClick="sendDataToSerial"
                 android:text="执行扣款"/>
         <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:onClick="cancleCutMoney"
-                android:text="取消扣款"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:onClick="cancleCutMoney"
+            android:text="取消扣款"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -65,6 +59,13 @@
             android:layout_marginTop="20dp"
             android:onClick="readMachineId"
             android:text="读取设备机器id"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:onClick="readLastMoney"
+            android:text="读取最后一次卡内余额"/>
     </LinearLayout>
 
     <TextView

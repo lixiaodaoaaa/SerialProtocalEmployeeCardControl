@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion rootProject.ext.BUILD.compileSdkVersion
-    buildToolsVersion rootProject.ext.BUILD.buildToolsVersion
+    compileSdkVersion 23
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         minSdkVersion rootProject.ext.BUILD.minSdkVersion
@@ -16,19 +16,12 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    buildToolsVersion '25.0.2'
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
     testCompile 'junit:junit:4.12'
-
     compile project(':libraries:liba_vmc_serialport')
-
 }

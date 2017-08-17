@@ -1,19 +1,17 @@
-package com.lixiaodaoaaa.uitls;
+package vmc.employee.card.utils;
 
-import vmc.employee.card.utils.FormatUtils;
+import static vmc.employee.card.utils.CardProtocalDefine.CUT_HEADER_COMMAND_DATA;
+import static vmc.employee.card.utils.CardProtocalDefine.DATA_EMPTY;
+import static vmc.employee.card.utils.CardProtocalDefine.HEADER_DATA1;
+import static vmc.employee.card.utils.CardProtocalDefine.HEADER_DATA2;
+import static vmc.employee.card.utils.FormatUtils.fromAmountToAmountData;
+import static vmc.employee.card.utils.FormatUtils.revertString;
 
 /**
  * Created by lixiaodaoaaa on 2017/8/15.
  */
 
 public class CardProtocalUtils {
-
-
-    private static String HEADER_DATA1 = "AA";
-    private static String HEADER_DATA2 = "BB";
-
-    private static String CUT_HEADER_COMMAND_DATA = HEADER_DATA1 + HEADER_DATA2 + CardFunctionInterface.FUNCTION_CUT;
-    private static String DATA_EMPTY = "0000" + "0000";
 
 
     public static String getCutAmountCommand(float amountValue) {
@@ -29,33 +27,26 @@ public class CardProtocalUtils {
         return checkHexData + checkResult;
     }
 
+    public static String getReadLastTimeAvailbleAmountCommand() {
+        String checkHexData = HEADER_DATA1 + HEADER_DATA2 + CardFunctionInterface.FUNCTION_READ_AVAIBLE_AMOUNT + DATA_EMPTY;
+        String checkResult = getAddCheckResult(checkHexData);
+        return checkHexData + checkResult;
+    }
+
     public static String getMachineIdCommand() {
         String checkHexData = HEADER_DATA1 + HEADER_DATA2 + CardFunctionInterface.FUNCTION_READ_MACHINE_ID + DATA_EMPTY;
         String checkResult = getAddCheckResult(checkHexData);
         return checkHexData + checkResult;
     }
 
-
-    /***
-     *
-     * @param amountValue
-     * FF 00 = 255
-     * 00 01 = 25.6
-     * 00 02  = 51.2
-     * amountValue convertTo 16Hex
-     * 数据位为 4个字节 data1 data2 data3 data4
-     * @return
-     */
-    public static String fromAmountToAmountData(float amountValue) {
-        Float calValue = amountValue * 10;
-        int calIntegerValue = calValue.intValue();
-        String hexValue = FormatUtils.intValueTo4HexString(calIntegerValue);
-        String data3 = "00";
-        String data4 = "00";
-        //数据的前两位;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        String dataFrontSecond = revertString(hexValue);
-        return dataFrontSecond + data3 + data4;
+    public static String getReadConnectServerStatus() {
+        String checkHexData = HEADER_DATA1 + HEADER_DATA2 + CardFunctionInterface.FUNCTION_READ_CONNECT_SERVER_STATUS + DATA_EMPTY;
+        String checkResult = getAddCheckResult(checkHexData);
+        return checkHexData + checkResult;
     }
+
+
+
 
     public static String getAddCheckResult(String checkData) {
         if (checkData == null || checkData.equals("")) {
@@ -66,23 +57,6 @@ public class CardProtocalUtils {
             result += Integer.parseInt(checkData.substring(i, i + 2), 16);
         }
         return revertString(String.format("%04x", result));
-    }
-
-
-    /**
-     * 重新排序 string
-     * 举例输入：00 11
-     * 输出   :11 00
-     * <p>
-     * 输入 11 22
-     * 输出 22 11
-     *
-     * @return
-     */
-    public static String revertString(String str) {
-        String data0 = str.substring(2, str.length());
-        String data1 = str.substring(0, 2);
-        return data0 + data1;
     }
 
 }
