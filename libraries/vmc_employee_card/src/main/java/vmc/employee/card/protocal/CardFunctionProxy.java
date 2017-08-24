@@ -1,6 +1,7 @@
 package vmc.employee.card.protocal;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.File;
@@ -9,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Executors;
 
+import de.greenrobot.event.EventBus;
+import vmc.employee.card.event.ReadSerialEvent;
 import vmc.employee.card.utils.CardFunctionInterface;
 import vmc.employee.card.utils.CardProtocalDefine;
 import vmc.employee.card.utils.CardProtocalUtils;
@@ -112,7 +115,7 @@ public class CardFunctionProxy {
         }
         String readHeader = dataReadBuilder.toString().trim().substring(0, 2).toUpperCase();
         if (!readHeader.equals(CardProtocalDefine.HEADER_DATA1)) {
-            resetReadBuilder();
+            resetReadBuilder(null);
             return;
         }
         //字节数目不对 继续接收收据
@@ -127,45 +130,69 @@ public class CardFunctionProxy {
         String dataFunc = readData.toUpperCase().replace(CardProtocalDefine.HEADER, "").substring(0, 2);
         String data = readData.substring(readData.indexOf(dataFunc) + 2, readData.indexOf(dataFunc) + 10);
         String data1 = data.substring(0, 2);
+        ReadSerialEvent readSerialEvent = new ReadSerialEvent();
 
         //读取余额功能
         if (dataFunc.toUpperCase().equals(CardFunctionInterface.FUNCTION_READ_AVAIBLE_AMOUNT)) {
             Log.i("CardFunctionProxy", " 余额为：" + FormatUtils.fromAmountDataToAmount(data));
-            resetReadBuilder();
+            readSerialEvent.setMsg(" 读取余额成功  " + "余额为：" + FormatUtils.fromAmountDataToAmount(data));
+            resetReadBuilder(readSerialEvent);
+            return;
+        }
+
+        //读取机器ID
+        if (dataFunc.toUpperCase().equals(CardFunctionInterface.FUNCTION_READ_MACHINE_ID)) {
+            Log.i("CardFunctionProxy", " 机器ID为：" + data);
+            readSerialEvent.setMsg(" 机器ID为  " + "机器ID为：" + data);
+            resetReadBuilder(readSerialEvent);
             return;
         }
 
         Log.i("CardFunctionProxy", "dataFunc is " + dataFunc);
         Log.i("CardFunctionProxy", "data is " + data);
         Log.i("CardFunctionProxy", "data1 is " + data1);
+
+
         switch (data1.toUpperCase()) {
             case CardProtocalDefine.DATA_CONNECT_SUCCESS:
                 Log.i("CardFunctionProxy", " 通信成功");
+                readSerialEvent.setMsg(" 通信成功");
                 break;
             case CardProtocalDefine.DATA_CUT_SUCCESS:
                 Log.i("CardFunctionProxy", " 扣款成功");
+                readSerialEvent.setMsg(" 扣款成功");
                 break;
             case CardProtocalDefine.DATA_CANCEL_SUCCESS:
                 Log.i("CardFunctionProxy", " 取消成功");
+                readSerialEvent.setMsg(" 取消成功");
                 break;
             case CardProtocalDefine.DATA_TIME_OUT:
                 Log.i("CardFunctionProxy", " 未刷卡  超时退出");
+                readSerialEvent.setMsg(" 未刷卡  超时退出");
                 break;
             case CardProtocalDefine.DATA_CARD_MONEY_LOW:
                 Log.i("CardFunctionProxy", "余额不足");
+                readSerialEvent.setMsg(" 余额不足");
                 break;
             case CardProtocalDefine.DATA_MONEY_ERROR:
                 Log.i("CardFunctionProxy", " 输入金额有误");
+                readSerialEvent.setMsg(" 输入金额有误");
                 break;
 
             case CardProtocalDefine.DATA_CARD_BLACK:
                 Log.i("CardFunctionProxy", " 此卡已挂失");
+                readSerialEvent.setMsg(" 此卡已挂失");
                 break;
             default:
                 break;
         }
-        resetReadBuilder();
+        resetReadBuilder(readSerialEvent);
     }
 
-    private void resetReadBuilder() {dataReadBuilder.setLength(0);}
+    private void resetReadBuilder(ReadSerialEvent readSerialEvent) {
+        if (!TextUtils.isEmpty(readSerialEvent.getMsg())) {
+            EventBus.getDefault().post(readSerialEvent);
+        }
+        dataReadBuilder.setLength(0);
+    }
 }

@@ -21,12 +21,16 @@ package com.lixiaodaoaaa.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.gcssloop.graphics.R;
+import com.google.common.eventbus.Subscribe;
 
+import de.greenrobot.event.EventBus;
+import vmc.employee.card.event.ReadSerialEvent;
 import vmc.employee.card.protocal.CardFunctionImpl;
 
 public class MainActivity extends Activity {
@@ -41,6 +45,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
         setContentView(R.layout.activity_main);
         initView();
         initData();
@@ -60,6 +65,9 @@ public class MainActivity extends Activity {
 
     public void sendDataToSerial(View view) {
         String paymentAmountStr = etPaymentAmount.getText().toString().trim();
+        if (TextUtils.isEmpty(paymentAmountStr)) {
+            paymentAmountStr = "1";
+        }
         cardFunction.cutAmount(Float.valueOf(paymentAmountStr));
     }
 
@@ -74,4 +82,18 @@ public class MainActivity extends Activity {
     public void readLastMoney(View view) {
         cardFunction.readLastTimeAvailbleAmount();
     }
+
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    @Subscribe
+    public void onEventMainThread(ReadSerialEvent readSerialEvent) {
+        if (!TextUtils.isEmpty(readSerialEvent.getMsg())) {
+            readCardTv.setText(readSerialEvent.getMsg());
+        }
+    }
+
 }
