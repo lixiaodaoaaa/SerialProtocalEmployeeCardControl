@@ -23,8 +23,8 @@
  #define DEV_SENDVALUE    	0x01	//外设发送消费金额
  #define DEV_SENDCANCEL		0x02	//外设发送取消命令
  #define DEV_READSN		0x03    //读取机器序列号
- #define DEV_READLASTCONINFO 	0x04	//读取最近一次消费卡余额功能
- #define DEV_READCONNECT		0x05	//读取是否成功链接服务器
+ #define DEV_READLASTCONINFO 0x04	//读取最近一次消费卡余额功能
+ #define DEV_READCONNECT	0x05	//读取是否成功链接服务器
 ```
 
 
@@ -36,11 +36,11 @@
   ---
  `发送->消费`
   ```c
-     AA BB 01 0A 00 00 00 70 01
+  AA BB 01 0A 00 00 00 70 01
   ```
  `回复->控制端`
   ```c
-    AA BB 01 FE 00 00 00 64 01
+  AA BB 01 FE 00 00 00 64 01
   ```
 
  `发送->消费` 取消本次消费
