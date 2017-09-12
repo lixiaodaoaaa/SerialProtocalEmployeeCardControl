@@ -24,7 +24,7 @@
  #define DEV_SENDCANCEL		0x02	//外设发送取消命令
  #define DEV_READSN		0x03    //读取机器序列号
  #define DEV_READLASTCONINFO 0x04	//读取最近一次消费卡余额功能
- #define DEV_READCONNECT	0x05	//读取是否成功链接服务器
+ #define DEV_READCONNECT 	 0x05	//读取是否成功链接服务器
 ```
 
 
