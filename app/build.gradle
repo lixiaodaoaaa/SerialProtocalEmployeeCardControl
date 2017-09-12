@@ -10,12 +10,15 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true      //开启混淆
+            zipAlignEnabled true    //压缩对齐
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {

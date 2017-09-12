@@ -8,10 +8,6 @@
     android:background="#FFFFFFFF"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingEnd="50dp"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingStart="50dp"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.lixiaodaoaaa.activity.MainActivity"
 >
@@ -33,8 +29,8 @@
                   android:layout_weight="1"
                   android:focusable="true"
                   android:focusableInTouchMode="true"
-                  android:inputType="numberDecimal"
                   android:gravity="center"
+                  android:inputType="numberDecimal"
                   android:text="1"
         />
 
@@ -46,25 +42,30 @@
                   android:orientation="horizontal"
     >
         <Button android:id="@+id/button3"
-                android:layout_width="wrap_content"
+                android:layout_width="0.0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:onClick="sendDataToSerial"
                 android:text="执行扣款"/>
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0.0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:onClick="cancleCutMoney"
             android:text="取消扣款"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0.0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:onClick="readMachineId"
+
             android:text="读取设备机器id"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0.0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:onClick="readLastMoney"
             android:text="读取最后一次卡内余额"/>
     </LinearLayout>
