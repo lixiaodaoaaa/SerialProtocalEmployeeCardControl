@@ -75,13 +75,22 @@ public class FormatUtils {
      *
      * @return
      */
-    public static float fromAmountDataToAmount(String amountData) {
+    public static int fromAmountDataToAmount(String amountData) {
         String hexValue = revert4String(amountData);
         Long amount = Long.parseLong(hexValue, 16);
         float realAmount = amount / (float) 10;
-        System.out.println("" + realAmount);
-        return realAmount;
+        return Math.round(realAmount);
     }
+
+    /**
+     * 把整数填充为0000展示：用于： 卡号显示：
+     */
+    public static String fromDataToCardNumber(String amountData) {
+        String hexValue = revert4String(amountData);
+        Long amount = Long.parseLong(hexValue, 16);
+        return  String.format("%010d", Math.round(amount));
+    }
+
 
     /***
      *
@@ -99,4 +108,6 @@ public class FormatUtils {
         String hexValue = String.format("%08x", calIntegerValue);
         return revert4String(hexValue);
     }
+
+
 }

@@ -61,7 +61,12 @@ public class CardFunctionProxy {
     }
 
     public void readConnectServerStatus() {
-        sendDataToSerial(CardProtocalUtils.getReadConnectServerStatus());
+//        sendDataToSerial(CardProtocalUtils.getReadConnectServerStatus());
+    }
+
+
+    public void readCustmerCardNumber() {
+        sendDataToSerial(CardProtocalUtils.getReadCustmerCardNumberCommond());
     }
 
 
@@ -115,7 +120,7 @@ public class CardFunctionProxy {
         }
         String readHeader = dataReadBuilder.toString().trim().substring(0, 2).toUpperCase();
         if (!readHeader.equals(CardProtocalDefine.HEADER_DATA1)) {
-            resetReadBuilder(null);
+            dataReadBuilder.setLength(0);
             return;
         }
         //字节数目不对 继续接收收据
@@ -127,10 +132,23 @@ public class CardFunctionProxy {
 
     private void analyzeReadData(StringBuilder stringBuilder) {
         String readData = stringBuilder.toString().trim();
+        Log.i("CardFunctionProxy", "read data  is " + readData);
         String dataFunc = readData.toUpperCase().replace(CardProtocalDefine.HEADER, "").substring(0, 2);
         String data = readData.substring(readData.indexOf(dataFunc) + 2, readData.indexOf(dataFunc) + 10);
         String data1 = data.substring(0, 2);
         ReadSerialEvent readSerialEvent = new ReadSerialEvent();
+
+        //读取卡序列号 内部卡号  消费金额 卡余额
+        if (dataFunc.toUpperCase().equals(CardFunctionInterface.FUNCTION_READ_CUSTMER_CARD_NUMBER)) {
+            if (dataReadBuilder.toString().trim().length() < 2 * 21) {
+                return;
+            } else {
+                readSerialEvent.setMsg(readDataToCustomerInfo(readData));
+                resetReadBuilder(readSerialEvent);
+                return;
+            }
+        }
+
 
         //读取余额功能
         if (dataFunc.toUpperCase().equals(CardFunctionInterface.FUNCTION_READ_AVAIBLE_AMOUNT)) {
@@ -147,6 +165,7 @@ public class CardFunctionProxy {
             resetReadBuilder(readSerialEvent);
             return;
         }
+
 
         Log.i("CardFunctionProxy", "dataFunc is " + dataFunc);
         Log.i("CardFunctionProxy", "data is " + data);
@@ -187,6 +206,35 @@ public class CardFunctionProxy {
                 break;
         }
         resetReadBuilder(readSerialEvent);
+    }
+
+
+    private String readDataToCustomerInfo(String readData) {
+        StringBuilder stringBuilder = new StringBuilder();
+        /**
+         b14731fc //卡序列号
+         2d000000 //内部卡号
+         0a000000 //消费金额
+         3ec89a3b //卡内余额
+         */
+        int stepLength = 8;
+        int startPoint = CardProtocalDefine.HEADER.length() + 2;
+        String cardNumberData = readData.substring(startPoint, startPoint + stepLength);
+        startPoint += stepLength;
+        String innerCardNumberData = readData.substring(startPoint, startPoint + stepLength);
+        startPoint += stepLength;
+        String cutMoney = readData.substring(startPoint, startPoint + stepLength);
+        startPoint += stepLength;
+        String totalMoney = readData.substring(startPoint, startPoint + stepLength);
+        Log.i("CardFunctionInterface", "cardNumberData  " + cardNumberData);
+        Log.i("CardFunctionInterface", "innerCardNumberData  " + innerCardNumberData);
+        Log.i("CardFunctionInterface", "cutMoney  " + cutMoney);
+        Log.i("CardFunctionInterface", "totalMoney  " + totalMoney);
+        stringBuilder.append("卡序列号为：" + FormatUtils.fromDataToCardNumber(cardNumberData) + "\n");
+        stringBuilder.append("内部卡号为：" + FormatUtils.fromDataToCardNumber(innerCardNumberData) + "\n");
+        stringBuilder.append("消费金额为：" + FormatUtils.fromAmountDataToAmount(cutMoney) + "元\n");
+        stringBuilder.append("卡内余额为：" + FormatUtils.fromAmountDataToAmount(totalMoney) + "元\n");
+        return stringBuilder.toString();
     }
 
     private void resetReadBuilder(ReadSerialEvent readSerialEvent) {

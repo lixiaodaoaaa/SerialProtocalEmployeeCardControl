@@ -42,4 +42,9 @@ public class CardFunctionImpl implements ICardFunction {
     public void readConnectServerStatus() {
         cardFunctionProxy.readConnectServerStatus();
     }
+
+    @Override
+    public void readCustomerCardNumber() {
+        cardFunctionProxy.readCustmerCardNumber();
+    }
 }

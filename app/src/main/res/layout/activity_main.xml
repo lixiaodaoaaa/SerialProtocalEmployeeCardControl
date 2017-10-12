@@ -41,17 +41,28 @@
                   android:gravity="center"
                   android:orientation="horizontal"
     >
+
+        <Button android:id="@+id/btnReadConnectStatus"
+                android:layout_width="0.0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="readMachineStatus"
+                android:maxLines="1"
+                android:text="读取连接状态"/>
+
         <Button android:id="@+id/button3"
                 android:layout_width="0.0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClick="sendDataToSerial"
+                android:maxLines="1"
                 android:text="执行扣款"/>
         <Button
             android:layout_width="0.0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="cancleCutMoney"
+            android:maxLines="1"
             android:text="取消扣款"/>
 
         <Button
@@ -59,15 +70,24 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="readMachineId"
-
+            android:maxLines="1"
             android:text="读取设备机器id"/>
 
         <Button
             android:layout_width="0.0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:maxLines="1"
             android:onClick="readLastMoney"
             android:text="读取最后一次卡内余额"/>
+
+        <Button
+            android:layout_width="0.0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="readCustomerCardNumber"
+            android:maxLines="1"
+            android:text="读取消费者卡号"/>
     </LinearLayout>
 
     <TextView
@@ -77,6 +97,8 @@
         android:layout_marginTop="15dp"
         android:textColor="@color/colorPrimaryDark"
         tools:text="read Text here"
+        android:textSize="18sp"
+        android:layout_marginLeft="50dp"
     />
 
 </LinearLayout>

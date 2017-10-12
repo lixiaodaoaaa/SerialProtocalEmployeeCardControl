@@ -39,13 +39,17 @@ public class CardProtocalUtils {
         return checkHexData + checkResult;
     }
 
-    public static String getReadConnectServerStatus() {
+    public static String getReadConnectServerStatusCommond() {
         String checkHexData = HEADER_DATA1 + HEADER_DATA2 + CardFunctionInterface.FUNCTION_READ_CONNECT_SERVER_STATUS + DATA_EMPTY;
         String checkResult = getAddCheckResult(checkHexData);
         return checkHexData + checkResult;
     }
 
-
+    public static String getReadCustmerCardNumberCommond() {
+        String checkHexData = HEADER_DATA1 + HEADER_DATA2 + CardFunctionInterface.FUNCTION_READ_CUSTMER_CARD_NUMBER + DATA_EMPTY;
+        String checkResult = getAddCheckResult(checkHexData);
+        return checkHexData + checkResult;
+    }
 
 
     public static String getAddCheckResult(String checkData) {

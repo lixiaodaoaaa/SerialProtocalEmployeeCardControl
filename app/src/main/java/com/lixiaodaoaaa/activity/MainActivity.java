@@ -96,4 +96,11 @@ public class MainActivity extends Activity {
         }
     }
 
+    public void readMachineStatus(View view) {
+        cardFunction.readConnectServerStatus();
+    }
+
+    public void readCustomerCardNumber(View view) {
+        cardFunction.readCustomerCardNumber();
+    }
 }

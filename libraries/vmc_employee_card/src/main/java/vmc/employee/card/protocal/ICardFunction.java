@@ -19,4 +19,6 @@ public interface ICardFunction {
     void readMachineID();
 
     void readConnectServerStatus();
+
+    void readCustomerCardNumber();
 }

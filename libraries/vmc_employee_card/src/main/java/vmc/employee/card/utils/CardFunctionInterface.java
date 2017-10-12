@@ -27,4 +27,10 @@ public interface CardFunctionInterface {
      * 读取是否成功链接服务器成功
      */
     String FUNCTION_READ_CONNECT_SERVER_STATUS = "05";
+
+    /**
+     * 读取消费者卡号
+     *
+     */
+    String FUNCTION_READ_CUSTMER_CARD_NUMBER = "06";
 }
