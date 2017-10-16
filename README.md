@@ -91,7 +91,3 @@
 	OPER_C_LOG_CONTINUE,			/* 0x52	连续刷卡*/
 ```
 
-## 关于作者
-   > * 有问题可以联系我
-   > * email : lixiaodaoaaa@126.com
-   > * http://weibo.com/lixiaodaoaaa
