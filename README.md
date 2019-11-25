@@ -4,6 +4,31 @@
   本程序是关于Android机器打开串口，并操作串口的示例。需要Android机器有串口，刚好我们演示的机器是Android工控机，直接有串口，可以直接连接设备。并且知道该串口的名字是`"/dev/ttymxc2"`。机器不一样，该串口名称不一样。根据操作的串口设备不同，目前串口的通信设备是员工卡读卡器，像读卡器输出不同的指令，比如扣款 、消费、查询、来简单实现操作通过串口控制串口设备的目的。本程序本质还是串口通信和串口通信协议解析。
 
 
+##  项目运行后截图
+
+
+1. 软件dmeo 运行后
+![](https://raw.githubusercontent.com/lixiaodaoaaa/publicSharePic/master/preview_project.png)
+2. 设备接入情况说明
+![](https://raw.githubusercontent.com/lixiaodaoaaa/publicSharePic/master/device_show.jpg)
+
+
+
+## 怎么获取串口名称（主工程目录要配置串口名称、打开串口操作）
+
+在电脑中运行adb shell.
+```
+adb shell
+cd /dev/
+ls
+
+```
+以tty开头的为串口名称。
+本项目中的工控机串口名称为ttyS0
+与下图
+
+
+
 
 ## 本程序目录结构
 ```

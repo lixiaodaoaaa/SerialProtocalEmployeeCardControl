@@ -30,7 +30,7 @@ public class CardFunctionProxy {
     private FileOutputStream mOutputStream;
     private StringBuilder dataReadBuilder;
     private boolean isStop = false;
-    private static String EMPLOYEE_DEVICE_NAME = "/dev/ttymxc2";
+    private static String EMPLOYEE_DEVICE_NAME = "/dev/ttyS0";
 
     public CardFunctionProxy() {
     }
