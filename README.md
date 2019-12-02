@@ -116,3 +116,13 @@ ls
 	OPER_C_LOG_CONTINUE,			/* 0x52	连续刷卡*/
 ```
 
+## 问题咨询
+![](https://raw.githubusercontent.com/lixiaodaoaaa/publicSharePic/master/20191202134236.png)
+
+**请阅读wiki项目文档，了解更多**
+
+[本项目WiKI地址](https://github.com/lixiaodaoaaa/SerialProtocalEmployeeCardControl/wiki)
+
+### 问题列表
+
+[关于同时读取多个串口,该如何操作问题回复](https://github.com/lixiaodaoaaa/SerialProtocalEmployeeCardControl/wiki/%E5%85%B3%E4%BA%8E%E5%90%8C%E6%97%B6%E8%AF%BB%E5%8F%96%E5%A4%9A%E4%B8%AA%E4%B8%B2%E5%8F%A3,%E8%AF%A5%E5%A6%82%E4%BD%95%E6%93%8D%E4%BD%9C%E9%97%AE%E9%A2%98%E5%9B%9E%E5%A4%8D)
